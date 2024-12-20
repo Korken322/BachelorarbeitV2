@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch-Werbetexte generieren</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #002e12; /* Dunkles Grün für den Header */
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        main {
+            max-width: 1500px;
+            margin: 20px auto;
+            background: #eaf2ea; /* Heller Grünton für den Hintergrund */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #004225; /* Mittelgrün für die Überschrift */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #004225; /* Dunkler Grünton für Tabellenheader */
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9; /* Hellgrau für abwechselnde Zeilen */
+        }
+        tr:hover {
+            background-color: #d6e6d6; /* Helles Grün beim Hover */
+        }
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        button, a {
+            font-size: 1em;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            background-color: #004225; /* Dunkler Grünton für Buttons */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+        }
+        button:hover, a:hover {
+            background-color: #006837; /* Etwas hellerer Grünton beim Hover */
+        }
+        .action-buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #searchInput {
+            margin: 20px auto;
+            width: 100%;
+            max-width: 500px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .style-select-container {
+            margin: 20px auto;
+            max-width: 500px;
+        }
+        .style-select-container select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Batch-Werbetexte generieren</h1>
+    </header>
+    <main>
+        <!-- Suchfeld für Filterung -->
+        <input type="text" id="searchInput" placeholder="Nach Artikelnummer oder Beschreibung suchen...">
+
+        <form method="POST" action="{{ url_for('batch.batch') }}">
+            <!-- Stilarten-Auswahl -->
+            <div class="style-select-container">
+                <select name="style" required>
+                    <option value="" disabled selected>Stilart auswählen</option>
+                    {% for stil in stilarten %}
+                    <option value="{{ stil.id }}">{{ stil.stilname }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>HGNummer</th>
+                        <th>Artikelbeschreibung</th>
+                        <th>Auswählen</th>
+                    </tr>
+                </thead>
+                <tbody id="articleTableBody">
+                    {% for article in articles %}
+                    <tr>
+                        <td>{{ article.HGNummer }}</td>
+                        <td>{{ article.Artikelbeschreibung }}</td>
+                        <td>
+                            <input type="checkbox" name="selected_edvs" value="{{ article.HGNummer }}">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="action-buttons">
+                <button type="submit">Texte generieren</button>
+                <a href="{{ url_for('index.index') }}">Zurück zur Startseite</a>
+            </div>
+        </form>
+    </main>
+    <script>
+        // JavaScript zur Filterung der Tabelle
+        const searchInput = document.getElementById('searchInput');
+        const tableBody = document.getElementById('articleTableBody');
+        const rows = tableBody.getElementsByTagName('tr');
+
+        searchInput.addEventListener('input', function() {
+            const filter = searchInput.value.toLowerCase();
+            for (const row of rows) {
+                const hgNummer = row.cells[0].textContent.toLowerCase();
+                const artikelbeschreibung = row.cells[1].textContent.toLowerCase();
+
+                if (hgNummer.includes(filter) || artikelbeschreibung.includes(filter)) {
+                    row.style.display = ''; // Zeige die Zeile
+                } else {
+                    row.style.display = 'none'; // Verstecke die Zeile
+                }
+            }
+        });
+    </script>
+</body>
+</html>

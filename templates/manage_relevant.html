@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relevante Attribute verwalten</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #002e12; /* Dunkles Grün für den Header */
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        main {
+            max-width: 1500px;
+            margin: 20px auto;
+            background: #eaf2ea; /* Heller Grünton für den Hintergrund */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #004225; /* Mittelgrün für die Überschrift */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #004225; /* Dunkler Grünton für Tabellenheader */
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9; /* Hellgrau für abwechselnde Zeilen */
+        }
+        tr:hover {
+            background-color: #d6e6d6; /* Helles Grün beim Hover */
+        }
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        button, a {
+            font-size: 1em;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            background-color: #004225; /* Dunkler Grünton für Buttons */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+        }
+        button:hover, a:hover {
+            background-color: #006837; /* Etwas hellerer Grünton beim Hover */
+        }
+        .action-buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Relevante Attribute verwalten</h1>
+    </header>
+    <main>
+        <form method="POST" action="{{ url_for('relevant.update_relevant') }}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Attributgruppenname</th>
+                        <th>Attributgruppe</th>
+                        <th>Sprache</th>
+                        <th>Bezeichnung</th>
+                        <th>Attributeart</th>
+                        <th>Materialattribut</th>
+                        <th>MaterialattributID</th>
+                        <th>Relevant</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data %}
+                    <tr>
+                        <td>{{ row.id }}</td>
+                        <td>{{ row.Attributgruppenname }}</td>
+                        <td>{{ row.AttrGrpID }}</td>
+                        <td>{{ row.Sprache }}</td>
+                        <td>{{ row.BezeichnungInTG }}</td>
+                        <td>{{ row.Attributeart }}</td>
+                        <td>{{ row.Materialattribut }}</td>
+                        <td>{{ row.MaterialattributID }}</td>
+                        <td>
+                            <input type="checkbox" name="relevant_{{ row.id }}" {% if row.Relevant %}checked{% endif %}>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="action-buttons">
+                <button type="submit">Speichern</button>
+                <a href="{{ url_for('index.index') }}">Zurück zur Startseite</a>
+            </div>
+        </form>
+    </main>
+</body>
+</html>
